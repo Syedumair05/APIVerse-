@@ -2,6 +2,11 @@
 
 **Explore the World Through REST APIs**
 
+🌐 **Live Website Demo**: [https://api-verse-ashy.vercel.app/](https://api-verse-ashy.vercel.app/)  
+📦 **GitHub Repository**: [https://github.com/Syedumair05/APIVerse-](https://github.com/Syedumair05/APIVerse-)
+
+---
+
 APIVerse is a production-grade, highly interactive React & TypeScript web application designed to consume, filter, visualize, and analyze live geographic and demographic data from the public **REST Countries API**.
 
 ---
@@ -64,6 +69,7 @@ APIVerse/
 │   └── favicon.svg
 ├── src/
 │   ├── api/
+│   │   ├── analyticsApi.ts        # Analytics service layer over complete dataset
 │   │   └── countriesApi.ts        # Axios service layer & localStorage caching
 │   ├── components/
 │   │   ├── CountryCard.tsx        # Country flag & metrics card
@@ -77,7 +83,7 @@ APIVerse/
 │   │   ├── Navbar.tsx             # Main header & mobile navigation
 │   │   ├── Pagination.tsx         # Page controls & item counter
 │   │   ├── SearchBar.tsx          # Debounced input & shortcut handler
-│   │   ├── StatsCards.tsx         # Dynamic KPI statistics cards
+│   │   ├── StatsCards.tsx         # Global invariant KPI statistics cards
 │   │   └── ThemeToggle.tsx        # Dark/Light mode toggle switch
 │   ├── context/
 │   │   ├── FavoritesContext.tsx   # Favorited cca3 codes provider
@@ -92,6 +98,7 @@ APIVerse/
 │   │   ├── Favorites.tsx          # Bookmarked countries page
 │   │   └── Home.tsx               # Primary dashboard page
 │   ├── types/
+│   │   ├── analytics.ts           # Analytics interfaces
 │   │   └── country.ts             # TypeScript interfaces & types
 │   ├── utils/
 │   │   ├── countryUtils.ts        # Formatting, density & filter helpers
@@ -139,19 +146,10 @@ npm run preview
 
 ---
 
-## 🚀 Deployment
+## 🚀 Live Production Links
 
-### Deploying to Vercel
-1. Push your repository to GitHub.
-2. Import the project in your Vercel Dashboard.
-3. Vercel automatically detects Vite. Build command: `npm run build`, Output directory: `dist`.
-4. Click **Deploy**.
-
-### Deploying to Netlify
-1. Connect your GitHub repository to Netlify.
-2. Set Build Command: `npm run build`.
-3. Set Publish directory: `dist`.
-4. Click **Deploy Site**.
+- 🌐 **Vercel Live App**: [https://api-verse-ashy.vercel.app/](https://api-verse-ashy.vercel.app/)
+- 📦 **GitHub Repository**: [https://github.com/Syedumair05/APIVerse-](https://github.com/Syedumair05/APIVerse-)
 
 ---
 

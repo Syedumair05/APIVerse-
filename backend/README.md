@@ -2,6 +2,11 @@
 
 **Production-Quality Express + TypeScript REST API Gateway**
 
+🌐 **Frontend Live Demo**: [https://api-verse-ashy.vercel.app/](https://api-verse-ashy.vercel.app/)  
+📦 **GitHub Repository**: [https://github.com/Syedumair05/APIVerse-](https://github.com/Syedumair05/APIVerse-)
+
+---
+
 The **APIVerse Backend** acts as a secure, cached, validated, and rate-limited REST API layer between the React frontend and the public REST Countries API, with MongoDB persistence for user favorites and backend payload caching.
 
 ---
@@ -84,6 +89,6 @@ npm run build
 npm start
 ```
 
-Server running at: `http://localhost:5000`
-Swagger Documentation: `http://localhost:5000/api-docs`
-Health Status: `http://localhost:5000/api/health`
+Server running at: `http://localhost:5000`  
+Swagger Documentation: `http://localhost:5000/api-docs`  
+Health Status: `http://localhost:5000/api/health`  
