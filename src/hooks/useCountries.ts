@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { getCountries } from '../api/countriesApi';
+import { getOverviewAnalytics } from '../api/analyticsApi';
 import type { Country, PopulationFilter, RegionFilter, SortOption } from '../types/country';
+import type { Analytics } from '../types/analytics';
 import { filterCountries, sortCountries } from '../utils/countryUtils';
-import { calculateOverallStats } from '../utils/statistics';
 import { useDebounce } from './useDebounce';
 
 const ITEMS_PER_PAGE = 12;
@@ -11,8 +12,9 @@ const ITEMS_PER_PAGE = 12;
 export function useCountries() {
   const [searchParams, setSearchParams] = useSearchParams();
 
-  // Raw API State
+  // Complete Raw Dataset State & Analytics State
   const [countries, setCountries] = useState<Country[]>([]);
+  const [analytics, setAnalytics] = useState<Analytics | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isFromCache, setIsFromCache] = useState<boolean>(false);
@@ -34,14 +36,20 @@ export function useCountries() {
   // Debounced search query
   const debouncedSearch = useDebounce(searchInput, 300);
 
-  // Fetch API data
+  // Fetch COMPLETE API dataset and Global Analytics
   const fetchData = useCallback(async (forceRefresh = false) => {
     setIsLoading(true);
     setError(null);
     try {
+      // 1. Fetch complete 250+ country dataset
       const { data, fromCache } = await getCountries(forceRefresh);
+      console.log(`Fetched ${data.length} countries from REST Countries API`);
       setCountries(data);
       setIsFromCache(fromCache);
+
+      // 2. Fetch global analytics over the complete dataset
+      const overviewStats = await getOverviewAnalytics();
+      setAnalytics(overviewStats);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -74,18 +82,13 @@ export function useCountries() {
     setCurrentPage(1);
   }, [debouncedSearch, region, population, sort]);
 
-  // Calculate filtered and sorted dataset
+  // Calculate filtered and sorted dataset ONLY for grid cards
   const filteredCountries = useMemo(() => {
     const filtered = filterCountries(countries, debouncedSearch, region, population);
     return sortCountries(filtered, sort);
   }, [countries, debouncedSearch, region, population, sort]);
 
-  // Calculate dynamic overall stats based on filtered dataset (or full dataset if no filter)
-  const dynamicStats = useMemo(() => {
-    return calculateOverallStats(filteredCountries.length > 0 ? filteredCountries : countries);
-  }, [filteredCountries, countries]);
-
-  // Pagination math
+  // Pagination math (12 items per page)
   const totalPages = Math.ceil(filteredCountries.length / ITEMS_PER_PAGE) || 1;
   const safeCurrentPage = Math.min(Math.max(1, currentPage), totalPages);
 
@@ -110,6 +113,7 @@ export function useCountries() {
 
   return {
     allCountries: countries,
+    analytics,
     filteredCountries,
     paginatedCountries,
     isLoading,
@@ -128,7 +132,6 @@ export function useCountries() {
     totalCount: filteredCountries.length,
     rawTotalCount: countries.length,
     itemsPerPage: ITEMS_PER_PAGE,
-    dynamicStats,
     fetchData,
     resetFilters,
     handlePageChange,

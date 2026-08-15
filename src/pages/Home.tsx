@@ -15,6 +15,7 @@ import type { Country } from '../types/country';
 export const Home: React.FC = () => {
   const {
     allCountries,
+    analytics,
     filteredCountries,
     paginatedCountries,
     isLoading,
@@ -32,7 +33,6 @@ export const Home: React.FC = () => {
     totalCount,
     rawTotalCount,
     itemsPerPage,
-    dynamicStats,
     fetchData,
     resetFilters,
     handlePageChange,
@@ -45,8 +45,13 @@ export const Home: React.FC = () => {
       {/* Hero Header */}
       <Hero />
 
-      {/* Dynamic Statistics Cards */}
-      <StatsCards stats={dynamicStats} isLoading={isLoading} />
+      {/* Global Invariant Statistics Cards */}
+      <StatsCards
+        analytics={analytics}
+        isLoading={isLoading}
+        error={error}
+        onRetry={() => fetchData(true)}
+      />
 
       {/* Main Explorer Control Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">

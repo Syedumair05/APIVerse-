@@ -2,7 +2,7 @@ import { CountryService } from './countryService';
 import { OverviewAnalytics, RegionAnalytics } from '../types/country';
 
 export class AnalyticsService {
-  static async getOverviewAnalytics(): Promise<OverviewAnalytics> {
+  static async getOverviewAnalytics(): Promise<OverviewAnalytics & { numberOfRegions: number }> {
     const { data: countries } = await CountryService.getRawCountriesDataset();
 
     const totalCountries = countries.length;
@@ -16,19 +16,19 @@ export class AnalyticsService {
     let mostPopulousCountry: OverviewAnalytics['mostPopulousCountry'] = null;
 
     if (countries.length > 0) {
-      const sortedByArea = [...countries].sort((a, b) => b.area - a.area);
-      const sortedByPop = [...countries].sort((a, b) => b.population - a.population);
+      const sortedByArea = [...countries].sort((a, b) => (b.area || 0) - (a.area || 0));
+      const sortedByPop = [...countries].sort((a, b) => (b.population || 0) - (a.population || 0));
 
       largestCountry = {
         name: sortedByArea[0].name.common,
         cca3: sortedByArea[0].cca3,
-        area: sortedByArea[0].area,
+        area: sortedByArea[0].area || 0,
       };
 
       mostPopulousCountry = {
         name: sortedByPop[0].name.common,
         cca3: sortedByPop[0].cca3,
-        population: sortedByPop[0].population,
+        population: sortedByPop[0].population || 0,
       };
     }
 
@@ -37,6 +37,7 @@ export class AnalyticsService {
       totalPopulation,
       totalArea,
       totalRegions: uniqueRegions.size,
+      numberOfRegions: uniqueRegions.size,
       averagePopulation,
       largestCountry,
       mostPopulousCountry,
@@ -70,12 +71,12 @@ export class AnalyticsService {
     const { data: countries } = await CountryService.getRawCountriesDataset();
 
     return [...countries]
-      .sort((a, b) => b.population - a.population)
+      .sort((a, b) => (b.population || 0) - (a.population || 0))
       .slice(0, safeLimit)
       .map((c) => ({
         name: c.name.common,
         cca3: c.cca3,
-        population: c.population,
+        population: c.population || 0,
         region: c.region,
         flag: c.flags.svg || c.flags.png,
       }));
@@ -86,12 +87,12 @@ export class AnalyticsService {
     const { data: countries } = await CountryService.getRawCountriesDataset();
 
     return [...countries]
-      .sort((a, b) => b.area - a.area)
+      .sort((a, b) => (b.area || 0) - (a.area || 0))
       .slice(0, safeLimit)
       .map((c) => ({
         name: c.name.common,
         cca3: c.cca3,
-        area: c.area,
+        area: c.area || 0,
         region: c.region,
         flag: c.flags.svg || c.flags.png,
       }));
