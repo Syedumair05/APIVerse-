@@ -23,5 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# Ignore backend lockfile to prevent Vercel monorepo scanner fsPath bug
+# Ignore backend files from git tracking for clean Vercel frontend deployment
+backend/package.json
 backend/package-lock.json
