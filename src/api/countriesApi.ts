@@ -1,5 +1,6 @@
 import axios from 'axios';
 import type { Country } from '../types/country';
+import fallbackCountries from '../data/countriesData.json';
 
 const DIRECT_REST_API_URL = 'https://restcountries.com/v3.1';
 const CACHE_KEY = 'apiverse_countries_cache';
@@ -7,7 +8,7 @@ const CACHE_TIMESTAMP_KEY = 'apiverse_countries_cache_timestamp';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const apiClient = axios.create({
-  timeout: 10000,
+  timeout: 5000, // 5 second timeout for fast fallback
   headers: {
     'Accept': 'application/json',
   },
@@ -17,7 +18,7 @@ export const fetchCountriesPayload = async (): Promise<Country[]> => {
   const customBackendUrl = import.meta.env.VITE_API_URL;
   const isProductionHost = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 
-  // If a valid custom backend URL is configured (and not pointing to localhost on production host)
+  // If custom backend URL is configured (and not pointing to localhost on production host)
   if (customBackendUrl && (!isProductionHost || !customBackendUrl.includes('localhost'))) {
     try {
       const response = await apiClient.get<{ success: boolean; data: Country[] }>(`${customBackendUrl}/countries?limit=300`);
@@ -25,19 +26,24 @@ export const fetchCountriesPayload = async (): Promise<Country[]> => {
         return response.data.data;
       }
     } catch {
-      // Fallback to direct REST Countries fetch
+      // Proceed to direct REST Countries API or fallback
     }
   }
 
-  // Direct fetch from REST Countries API
-  const fields = 'name,flags,capital,population,area,region,subregion,currencies,languages,cca2,cca3';
-  const directResponse = await apiClient.get<Country[]>(`${DIRECT_REST_API_URL}/all?fields=${fields}`);
-  
-  if (!directResponse.data || !Array.isArray(directResponse.data)) {
-    throw new Error('Received invalid country data format from server.');
+  // Direct fetch attempt from REST Countries API
+  try {
+    const fields = 'name,flags,capital,population,area,region,subregion,currencies,languages,cca2,cca3';
+    const directResponse = await apiClient.get<Country[]>(`${DIRECT_REST_API_URL}/all?fields=${fields}`);
+    
+    if (directResponse.data && Array.isArray(directResponse.data) && directResponse.data.length > 0) {
+      return directResponse.data;
+    }
+  } catch {
+    // Silently proceed to built-in fallback dataset
   }
 
-  return directResponse.data;
+  // Guaranteed offline/deprecation fallback dataset
+  return (fallbackCountries as unknown) as Country[];
 };
 
 export const getCountries = async (forceRefresh = false): Promise<{ data: Country[]; fromCache: boolean }> => {
@@ -71,22 +77,8 @@ export const getCountries = async (forceRefresh = false): Promise<{ data: Countr
       // Silently handle quota exceeded or private mode errors
     }
     return { data: freshData, fromCache: false };
-  } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      if (error.code === 'ECONNABORTED') {
-        throw new Error('Connection timed out. Please check your internet connection and try again.');
-      }
-      if (!error.response) {
-        throw new Error('Network error. Unable to connect to REST Countries API.');
-      }
-      if (error.response.status >= 500) {
-        throw new Error('REST API service is currently unavailable. Please try again later.');
-      }
-    }
-    if (error instanceof Error) {
-      throw error;
-    }
-    throw new Error('An unexpected error occurred while fetching country data.');
+  } catch {
+    return { data: (fallbackCountries as unknown) as Country[], fromCache: false };
   }
 };
 
