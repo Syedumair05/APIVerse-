@@ -1,35 +1,43 @@
 import axios from 'axios';
 import type { Country } from '../types/country';
 
-const BACKEND_API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 const DIRECT_REST_API_URL = 'https://restcountries.com/v3.1';
 const CACHE_KEY = 'apiverse_countries_cache';
 const CACHE_TIMESTAMP_KEY = 'apiverse_countries_cache_timestamp';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const apiClient = axios.create({
-  timeout: 12000, // 12 second timeout
+  timeout: 10000,
   headers: {
     'Accept': 'application/json',
   },
 });
 
-export const fetchCountriesFromBackend = async (): Promise<Country[]> => {
-  try {
-    const response = await apiClient.get<{ success: boolean; data: Country[] }>(`${BACKEND_API_URL}/countries?limit=300`);
-    if (response.data && response.data.success && Array.isArray(response.data.data)) {
-      return response.data.data;
+export const fetchCountriesPayload = async (): Promise<Country[]> => {
+  const customBackendUrl = import.meta.env.VITE_API_URL;
+  const isProductionHost = typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+
+  // If a valid custom backend URL is configured (and not pointing to localhost on production host)
+  if (customBackendUrl && (!isProductionHost || !customBackendUrl.includes('localhost'))) {
+    try {
+      const response = await apiClient.get<{ success: boolean; data: Country[] }>(`${customBackendUrl}/countries?limit=300`);
+      if (response.data && response.data.success && Array.isArray(response.data.data) && response.data.data.length > 0) {
+        return response.data.data;
+      }
+    } catch {
+      // Fallback to direct REST Countries fetch
     }
-    throw new Error('Invalid backend response structure');
-  } catch {
-    // Fallback to direct REST Countries endpoint if backend service is unreachable
-    const fields = 'name,flags,capital,population,area,region,subregion,currencies,languages,cca2,cca3';
-    const fallbackResponse = await apiClient.get<Country[]>(`${DIRECT_REST_API_URL}/all?fields=${fields}`);
-    if (!fallbackResponse.data || !Array.isArray(fallbackResponse.data)) {
-      throw new Error('Received invalid country data format from server.');
-    }
-    return fallbackResponse.data;
   }
+
+  // Direct fetch from REST Countries API
+  const fields = 'name,flags,capital,population,area,region,subregion,currencies,languages,cca2,cca3';
+  const directResponse = await apiClient.get<Country[]>(`${DIRECT_REST_API_URL}/all?fields=${fields}`);
+  
+  if (!directResponse.data || !Array.isArray(directResponse.data)) {
+    throw new Error('Received invalid country data format from server.');
+  }
+
+  return directResponse.data;
 };
 
 export const getCountries = async (forceRefresh = false): Promise<{ data: Country[]; fromCache: boolean }> => {
@@ -54,9 +62,8 @@ export const getCountries = async (forceRefresh = false): Promise<{ data: Countr
     }
   }
 
-  // Fetch fresh data from APIVerse Backend (with direct REST API fallback)
   try {
-    const freshData = await fetchCountriesFromBackend();
+    const freshData = await fetchCountriesPayload();
     try {
       localStorage.setItem(CACHE_KEY, JSON.stringify(freshData));
       localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
@@ -70,10 +77,10 @@ export const getCountries = async (forceRefresh = false): Promise<{ data: Countr
         throw new Error('Connection timed out. Please check your internet connection and try again.');
       }
       if (!error.response) {
-        throw new Error('Network error. Unable to connect to APIVerse backend or REST API.');
+        throw new Error('Network error. Unable to connect to REST Countries API.');
       }
       if (error.response.status >= 500) {
-        throw new Error('Backend service is currently unavailable. Please try again later.');
+        throw new Error('REST API service is currently unavailable. Please try again later.');
       }
     }
     if (error instanceof Error) {
