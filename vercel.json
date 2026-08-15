@@ -1,11 +1,8 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
-  "cleanUrls": true,
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+  "services": {
+    "frontend": {
+      "root": ".",
+      "framework": "vite"
     }
-  ]
+  }
 }
