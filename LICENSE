@@ -1,21 +1,51 @@
-MIT License
+PROPRIETARY API LICENSE
 
-Copyright (c) 2026 Syed Umair Ahmed
+Copyright (c) 2026 Syed Umair Ahmed. All Rights Reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+1. PERMITTED API USAGE
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+Permission is granted to users to access and query the deployed API and
+its services through publicly provided API endpoints, subject to applicable
+usage limits, rate limits, and terms of service.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Users may use API responses obtained through authorized requests within
+their own software applications, provided that such use complies with
+applicable laws, third-party data licenses, and the API's terms of service.
+
+2. RESTRICTIONS
+
+This license does NOT grant any rights to copy, modify, reproduce,
+distribute, sublicense, sell, reverse engineer, decompile, or create
+derivative works from the API's underlying source code, database
+architecture, server implementation, or associated documentation.
+
+Systematic scraping, automated harvesting, or bulk extraction of API
+responses for the purpose of replicating, cloning, redistributing, or
+offering a competing API platform or database service is prohibited.
+
+3. INTELLECTUAL PROPERTY
+
+The source code, system architecture, database design, backend
+implementation, branding, and associated documentation remain the
+exclusive intellectual property of Syed Umair Ahmed.
+
+No ownership or intellectual property rights are transferred to any
+user under this license.
+
+4. SERVICE MODIFICATION AND RESERVATION OF RIGHTS
+
+The owner reserves the right to modify, rate-limit, suspend, restrict,
+or discontinue the API service, or any portion thereof, at any time,
+with or without prior notice.
+
+5. DISCLAIMER OF WARRANTY AND LIMITATION OF LIABILITY
+
+THE SOFTWARE AND API ARE PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR NON-INFRINGEMENT.
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL
+SYED UMAIR AHMED OR THE COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+DAMAGES, OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT,
+OR OTHERWISE, ARISING FROM, OUT OF, OR IN CONNECTION WITH THE API,
+THE SOFTWARE, SERVICE INTERRUPTIONS, OR THE USE OF API RESPONSES.
