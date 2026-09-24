@@ -161,3 +161,84 @@ APIVerse/
 ├── tsconfig.json
 ├── vite.config.ts
 └── README.md
+
+```
+
+
+
+### 💻 Running Locally
+
+#### 1. Prerequisites
+
+- Node.js (v18.0.0 or higher recommended)
+- npm or yarn
+- MongoDB
+
+#### 2. Installation
+
+Clone the repository and install dependencies:
+
+```bash
+npm install
+```
+
+Install backend dependencies:
+
+```bash
+cd backend
+npm install
+cd ..
+```
+
+#### 3. Environment Configuration
+
+Create the required `.env` files using the provided `.env.example` files.
+
+Do not commit API keys, secrets, or local environment files to GitHub.
+
+#### 4. Start Development Servers
+
+Start the backend:
+
+```bash
+cd backend
+npm run dev
+```
+
+Start the frontend in another terminal:
+
+```bash
+npm run dev
+```
+
+Open your browser at:
+
+```text
+http://localhost:5173
+```
+
+### 🚀 Live Production Links
+
+🌐 **Vercel Live App:** https://api-verse-ashy.vercel.app/  
+📦 **GitHub Repository:** https://github.com/Syedumair05/APIVerse-
+
+### 🛡️ Error Handling & Reliability
+
+- **Network Downtime:** Displays a user-friendly error screen with a prominent Try Again button.
+- **Timeout Management:** 12-second timeout configured on Axios to handle slow connections.
+- **Graceful Fallbacks:** Missing images, capitals, or currency objects display clean N/A fallback labels without crashing the application.
+- **Input Sanitization:** Debounced search prevents redundant filtering passes on every keystroke.
+
+### 👤 Contributors & Acknowledgments
+
+**Syed Umair Ahmed**  
+*Role: Original Project Development & Application Engineering*
+
+**Mohammed Hasshamuddin Khubaib**  
+*Role: Research Design, Caching Performance Evaluation, k6 Benchmarking, Experimental Analysis & Research Documentation*
+
+#### Acknowledgments
+
+**API Provider:** REST Countries API
+
+Designed and engineered with React 19, TypeScript, Node.js, Express, MongoDB, and Tailwind CSS.
